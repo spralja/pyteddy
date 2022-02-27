@@ -1,5 +1,5 @@
 import unittest
-import pyteddy
+import pyteddy.commands
 
 class ModuleTestCase(unittest.TestCase):
     def test_get_template(self):

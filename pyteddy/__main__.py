@@ -1,65 +1,24 @@
 from . import get_template
 from .templates import releif_template
+from . import commands
 
 import argparse
-from string import Template
-from os import mkdir
-from venv import EnvBuilder
-from pathlib import Path
-from pprint import PrettyPrinter
 import sys
 import traceback
-import requests
+
 
 VERSION = '0.0.2'
 
 
 def match(command, *args, **kwargs):
     try:
-        return getattr(sys.modules[__name__], command.replace('-', '_'))
+        return getattr(sys.modules[commands.__name__], command.replace('-', '_'))
     except:
         print('unknown command')
         sys.exit(1)
 
 def version(*args, **kwargs):
     print('v' + VERSION)
-
-
-def create_directory(releived_template, path, mapping):
-    path.mkdir()
-
-    for name, content in releived_template.items():
-        if type(content) is dict:
-            create_directory(content, path / name, mapping)
-        else:
-            create_file(content, path / name)
-
-
-def create_file(content, path):
-    path.touch()
-    file = path.open('w')
-    file.write(content)
-
-
-def create_package(args):
-    mapping = vars(args)
-    env_builder = EnvBuilder()
-    env_builder.create(mapping['package_name'])
-    package_path = Path(mapping['package_name']) / Path(mapping['package_name'])
-    template = get_template('default_package_template')
-    content = releif_template(template, mapping)
-    create_directory(content, package_path, mapping)
-    try:
-        pypi_statuscode = requests.get(releif_template('https://pypi.org/pypi/$package_name/json', mapping)).status_code 
-
-        if pypi_statuscode == 200:
-            print('Warning: package already exists on pypi')
-        elif pypi_statuscode != 404:
-            print(f'Warning: could not check pypi - error {pypi_statuscode}')
-            
-    except:
-        print('Warning: could not check pypi - error unknown')
-
     
 
 if __name__ == '__main__':
@@ -76,6 +35,7 @@ if __name__ == '__main__':
     create_package_parser.add_argument('--year', '-y', help='year used to releif template')
 
     args = parser.parse_args()
+
     verbose = False
     if vars(args).get('verbose'):
         verbose = True
@@ -91,7 +51,9 @@ if __name__ == '__main__':
             match(args.command)(args)
     except Exception as e:
         print('Fail! an error has occured.')
-        if True or vars(args).get('verbose'):
+        if verbose:
             traceback.print_exception(Exception, e, sys.exc_info()[2])
+        elif type(e) is FileExistsError:
+            print('directory already exsists')
         else:
             print('Try again with --verbose to see python stack trace.')

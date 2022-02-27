@@ -1,5 +1,5 @@
-import pyteddy.templates
+from . import templates
 
 
 def get_template(name='_default_package_template'):
-    return getattr(pyteddy.templates, '_' + name)
+    return getattr(templates, '_' + name)
