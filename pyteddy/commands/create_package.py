@@ -21,11 +21,12 @@ def create_file(content, path):
     file.write(content)
 
 
-def create_package(args):
-    mapping = vars(args)
+def create_package(mapping):
     if Path(mapping['package_name']).is_file():
         raise FileExistsError()
-
+    if mapping.get('repository_name') is None:
+        mapping['repository_name'] = mapping.get('package_name')
+        
     env_builder = EnvBuilder()
     env_builder.create(mapping['package_name'])
     package_path = Path(mapping['package_name']) / Path(mapping['package_name'])
