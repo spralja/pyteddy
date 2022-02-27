@@ -15,7 +15,7 @@ class File:
         template_file.close()
 
 template_dirs = ('$package_name', 'tests')
-location = relpath(join(Path(__file__).parent.parent.absolute(), 'templates'))
+location = relpath(join(Path(__file__).parent.absolute(), 'templates'))
 files = (
     join('$package_name', '__init__.py'), 
     join('tests', '__init__.py'),
