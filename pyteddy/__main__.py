@@ -10,7 +10,7 @@ from pprint import PrettyPrinter
 import sys
 import traceback
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 
 def match(command, *args, **kwargs):
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     if vars(args).get('verbose'):
         verbose = True
         vars(args).pop('verbose')
-        
+
     try:
         if vars(args).get('version'):
             vars(args).pop('version')
