@@ -9,6 +9,7 @@ from pathlib import Path
 from pprint import PrettyPrinter
 import sys
 import traceback
+import requests
 
 VERSION = '0.0.2'
 
@@ -48,6 +49,17 @@ def create_package(args):
     template = get_template('default_package_template')
     content = releif_template(template, mapping)
     create_directory(content, package_path, mapping)
+    try:
+        pypi_statuscode = requests.get(releif_template('https://pypi.org/pypi/$package_name/json', mapping)).status_code 
+
+        if pypi_statuscode == 200:
+            print('Warning: package already exists on pypi')
+        elif pypi_statuscode != 404:
+            print(f'Warning: could not check pypi - error {pypi_statuscode}')
+            
+    except:
+        print('Warning: could not check pypi - error unknown')
+
     
 
 if __name__ == '__main__':
@@ -64,7 +76,6 @@ if __name__ == '__main__':
     create_package_parser.add_argument('--year', '-y', help='year used to releif template')
 
     args = parser.parse_args()
-    print(args)
     verbose = False
     if vars(args).get('verbose'):
         verbose = True
@@ -80,7 +91,7 @@ if __name__ == '__main__':
             match(args.command)(args)
     except Exception as e:
         print('Fail! an error has occured.')
-        if vars(args).get('verbose'):
+        if True or vars(args).get('verbose'):
             traceback.print_exception(Exception, e, sys.exc_info()[2])
         else:
             print('Try again with --verbose to see python stack trace.')
