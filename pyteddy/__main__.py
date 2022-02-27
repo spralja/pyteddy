@@ -1,72 +1,56 @@
+from . import get_template
+from .templates import releif_template
+
 import argparse
 from string import Template
-from os.path import join, relpath
-from os import getcwd, mkdir
+from os import mkdir
 from venv import EnvBuilder
-import shutil
 from pathlib import Path
+from pprint import PrettyPrinter
+import sys
+import traceback
 
-class File:
-    def __init__(self, path, template_path):
-        self.path = path
-        self.template_path = template_path
-        template_file = open(template_path, 'r')
-        self.template = template_file.read()
-        template_file.close()
-
-template_dirs = ('$package_name', 'tests')
-location = relpath(join(Path(__file__).parent.absolute(), 'templates'))
-files = (
-    join('$package_name', '__init__.py'), 
-    join('tests', '__init__.py'),
-    '.gitignore',
-    'LICENSE',
-    'pyproject.toml',
-    'README.md',
-    'requirements.txt',
-    'setup.cfg',
-    )
-template_files = (join(location, file) for file in files)
+pprint = PrettyPrinter
 
 
-def copy_folder(*, package_name, user_name, user_email, organisation, repository_name):
-    template_dict = locals()
-    def templateify(_str):
-        nonlocal template_dict
-        template = Template(_str)
-        return template.substitute(template_dict)
+def create_directory(releived_template, path, mapping):
+    path.mkdir()
 
-    for template_dir in template_dirs:
-        mkdir(templateify(join('$package_name', '$package_name', template_dir)))
+    for name, content in releived_template.items():
+        if type(content) is dict:
+            create_directory(content, path / name, mapping)
+        else:
+            create_file(content, path / name)
 
-    temp = {}
-    for template_file, name in zip(template_files, files):
-        file = open(template_file, 'r')
-        temp[templateify(name)] = templateify(file.read())
-        file.close()
 
-    for name, content in temp.items():
-        file = open(templateify(join('$package_name', '$package_name', name)), 'w')
-        file.write(content)
-        file.close()
-
+def create_file(content, path):
+    path.touch()
+    file = path.open('w')
+    file.write(content)
+    
 
 if __name__ == '__main__':
-    print(location)
     parser = argparse.ArgumentParser(description='pyhon project manager')
     parser.add_argument('--package-name', help='package name', required=True)
     parser.add_argument('--user-name', help='User\'s name', required=True)
     parser.add_argument('--user-email', help='User\'s email', required=True)
     parser.add_argument('--organisation', help='Github repostiory\'s organisation', required=True)
     parser.add_argument('--repository-name', help='Github repostory name', required=True)
+    parser.add_argument('--verbose', '-v', action='store_true')
 
     args = parser.parse_args()
-    package_name = args.package_name
-    print(args.__dict__)
-    mkdir(package_name)
-    env_builder = EnvBuilder()
-    env_builder.create(package_name)
-    package_dir = join(package_name, package_name)
-    mkdir(package_dir)
-    copy_folder(**args.__dict__)
-    
+    try:
+        mapping = args.__dict__
+        mkdir(mapping['package_name'])
+        env_builder = EnvBuilder()
+        env_builder.create(mapping['package_name'])
+        package_path = Path(mapping['package_name']) / Path(mapping['package_name'])
+        template = get_template('default_package_template')
+        content = releif_template(template, mapping)
+        create_directory(content, package_path, mapping)
+    except Exception as e:
+        print('Fail! an error has occured.')
+        if args.verbose:
+            traceback.print_exception(Exception, e, sys.exc_info()[2])
+        else:
+            print('Try again with --verbose to see python stack trace.')

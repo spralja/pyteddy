@@ -1,10 +1,26 @@
+from string import Template
 
-default_package_template = {
+
+def releif_template(template, mapping):
+    if type(template) is dict:
+        releived_template = {}
+        for name, content in template.items():
+            releived_template[releif_template(name, mapping)] = releif_template(content, mapping)
+        
+        return releived_template
+    
+    if type(template) is tuple:
+        return releif_template('\n'.join(template) + '\n', mapping)
+    
+    return Template(template).substitute(mapping)
+        
+
+_default_package_template = {
     '$package_name': {
         '__init__.py': '',
     },
     'tests': {
-        '__init__py': ('import unittest', 'import $package_name')
+        '__init__.py': ('import unittest', 'import $package_name')
     },
     '.gitignore': ('__pycache__/', '*.egg-info/', 'build/'),
     'LICENSE': (
@@ -39,7 +55,7 @@ default_package_template = {
         'build-backend = "setuptools.build_meta"',
     ),
     'README.md': ('### $package_name',),
-    'requirements.txt': ('',),
+    'requirements.txt': (),
     'setup.cfg': (
         '[metadata]',
         'name = $package_name',
