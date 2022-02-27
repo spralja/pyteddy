@@ -26,7 +26,10 @@ def create_package(mapping):
         raise FileExistsError()
     if mapping.get('repository_name') is None:
         mapping['repository_name'] = mapping.get('package_name')
-        
+
+    if len(mapping.get('user_name').split(' ')) == 1:
+        print("Warning: Surname not detected")
+
     env_builder = EnvBuilder()
     env_builder.create(mapping['package_name'])
     package_path = Path(mapping['package_name']) / Path(mapping['package_name'])
@@ -35,7 +38,6 @@ def create_package(mapping):
     create_directory(content, package_path, mapping)
     try:
         pypi_statuscode = requests.get(releif_template('https://pypi.org/pypi/$package_name/json', mapping)).status_code 
-
         if pypi_statuscode == 200:
             print('Warning: package already exists on pypi')
         elif pypi_statuscode != 404:
