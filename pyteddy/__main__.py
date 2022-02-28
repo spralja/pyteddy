@@ -9,7 +9,7 @@ import shelve
 from pathlib import Path
 
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 def match(command, *args, **kwargs):
     try:
