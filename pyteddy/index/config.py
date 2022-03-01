@@ -1,11 +1,10 @@
 from .. import _db
 
-import sys
 from pathlib import Path
 import shelve
+import sys
 
-
-DB_NAME = str(Path(__file__).parent.parent / 'config')
+COMMAND = Path(__file__).name.split('.')[0]
 
 
 def execute(**kwargss):
@@ -14,8 +13,6 @@ def execute(**kwargss):
         if argss:
             getattr(sys.modules[__name__], kw)(*argss)
 
-    print(kwargss)
-
 
 def set(*args):
     kwargs = {}
@@ -23,10 +20,11 @@ def set(*args):
         kw, arg = arg.split('=')
         kwargs[kw] = arg
 
-    _db.set(__name__, **kwargs)
+    _db.update('config', **kwargs)
 
 
 def get(*kws):
-    kwargs = _db.get(__name__, *kws)
-    for kw, arg in kwargs.items():
-        print('='.join((kw, arg)))
+    kwargs = _db.get('config')
+    for kw in kws:
+        kwarg = kw, kwargs[kw]
+        print('='.join(kwarg))

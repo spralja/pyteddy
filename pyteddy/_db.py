@@ -1,16 +1,22 @@
+from pathlib import Path
 import shelve
 
-
-def set(name, **kwargs):
-    with shelve.open(name) as db:
-        for kw in kwargs.copy().keys():
-            db[kw] = kwargs[kw]
+DB_NAME = str(Path(__file__).parent / 'db')
 
 
-def get(name, *kws):
+def get(command):
     kwargs = {}
-    with shelve.open(name) as db:
-        for kw in kws:
-            kwargs[kw] = db[kw]
+    with shelve.open(DB_NAME) as db:
+        ckwargs = db[command]
 
-    return kwargs
+    return ckwargs
+
+
+def update(command, **kwargs):
+    with shelve.open(DB_NAME) as db:
+        if db.get(command) is None:
+            db[command] = {}
+
+        ckwargs = db[command]
+        ckwargs.update(kwargs)
+        db[command] = ckwargs

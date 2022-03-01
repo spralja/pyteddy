@@ -1,4 +1,6 @@
+from . import _db
 from ._parser import parser
+
 
 gargs = ('verbose',)
 gkwargs = {}
@@ -14,6 +16,7 @@ def main():
     
     for garg in gargs:
         gkwargs[garg] = kwargs.pop(garg)
+            
 
     execute(kwargs)
 
