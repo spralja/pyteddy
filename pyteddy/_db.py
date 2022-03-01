@@ -20,3 +20,12 @@ def update(command, **kwargs):
         ckwargs = db[command]
         ckwargs.update(kwargs)
         db[command] = ckwargs
+
+def delete(command, *kws):
+    with shelve.open(DB_NAME) as db:
+        ckwargs = db[command]
+        for kw in kws:
+            del ckwargs[kw]
+
+        db[command] = ckwargs
+        

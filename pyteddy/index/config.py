@@ -28,3 +28,7 @@ def get(*kws):
     for kw in kws:
         kwarg = kw, kwargs[kw]
         print('='.join(kwarg))
+
+
+def delete(*kws):
+    _db.delete('config', *kws)

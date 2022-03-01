@@ -21,6 +21,9 @@ def _get_parser():
     config_get_parser = config_subparser.add_parser('get', parents=[HasGargs])
     config_get_parser.add_argument('get', nargs='+')
 
+    config_del_parser = config_subparser.add_parser('delete', parents=[HasGargs], aliases=['del'])
+    config_del_parser.add_argument('delete', nargs='+')
+
     return parser
 
 
