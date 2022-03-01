@@ -13,10 +13,10 @@ def _get_parser():
     config_subparser = config_parser.add_subparsers()
 
     config_set_parser = config_subparser.add_parser('set', parents=[HasGargs])
-    config_set_parser.add_argument('set_args', nargs='+')
+    config_set_parser.add_argument('set', nargs='+')
 
     config_get_parser = config_subparser.add_parser('get', parents=[HasGargs])
-    config_get_parser.add_argument('get_args', nargs='+')
+    config_get_parser.add_argument('get', nargs='+')
 
     return parser
 

@@ -17,7 +17,7 @@ def execute(**kwargss):
     print(kwargss)
 
 
-def set_args(*args):
+def set(*args):
     kwargs = {}
     for arg in args:
         kw, arg = arg.split('=')
@@ -26,7 +26,7 @@ def set_args(*args):
     _db.set(__name__, **kwargs)
 
 
-def get_args(*kws):
+def get(*kws):
     kwargs = _db.get(__name__, *kws)
     for kw, arg in kwargs.items():
         print('='.join((kw, arg)))
