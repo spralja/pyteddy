@@ -4,14 +4,15 @@ from pathlib import Path
 import shelve
 import sys
 
-COMMAND = Path(__file__).name.split('.')[0]
+__module__ = sys.modules[__name__]
 
+COMMAND = Path(__file__).name.split('.')[0]
 
 def execute(**kwargss):
     for kw in kwargss.copy().keys():
         argss = kwargss.pop(kw)
         if argss:
-            getattr(sys.modules[__name__], kw)(*argss)
+            getattr(__module__, kw)(*argss)
 
 
 def set(*args):

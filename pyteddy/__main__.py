@@ -8,7 +8,7 @@ gargs = ('verbose',)
 gkwargs = {}
 
 def execute(kwargs):
-    from .index import execute
+    from .commands import execute
 
     execute(kwargs)
 
@@ -26,7 +26,7 @@ def main():
         execute(kwargs)
     except Exception as e:
         print('Error: an error has accoured')
-        if kwargs['verbose']:
+        if verbose:
             traceback.print_exception(e, e, sys.exc_info()[2])
         else:
             print('add --verbose to print python stack trace')
