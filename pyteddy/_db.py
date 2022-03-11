@@ -12,7 +12,7 @@ def get(command):
     return ckwargs
 
 
-def update(command, **kwargs):
+def update(command, kwargs):
     with shelve.open(DB_NAME) as db:
         if db.get(command) is None:
             db[command] = {}

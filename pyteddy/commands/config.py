@@ -21,7 +21,7 @@ def set(*args):
         kw, arg = arg.split('=')
         kwargs[kw] = arg
 
-    _db.update('config', **kwargs)
+    _db.update('config', kwargs)
 
 
 def get(*kws):

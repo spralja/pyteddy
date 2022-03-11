@@ -15,7 +15,7 @@ def execute(kwargs):
 
 def main():
     kwargs = vars(parser.parse_args())
-    
+    print(kwargs)
     verbose = kwargs.pop('verbose')
 
     if kwargs.pop('version'):
