@@ -16,7 +16,7 @@ def execute(**kwargs):
     getattr(__module__, subcommand)(**kwargs)
 
 
-def load(*, name, path):
+def load(*, path, name):
     path = Path(path)
     template = template_from_path(path)
     ckwargs = {name: template}
