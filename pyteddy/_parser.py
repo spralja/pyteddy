@@ -34,8 +34,8 @@ def _get_parser():
     template_load_parser.add_argument('path')
 
     template_create_parser = template_subparsers.add_parser('create', parents=[HasGargs])
-    template_create_parser.add_argument('name')
-    template_create_parser.add_argument('path')
+    template_create_parser.add_argument('name', default='__default__')
+    template_create_parser.add_argument('path', default='.')
     template_create_parser.add_argument('context', nargs='*')
 
     template_delete_parser = template_subparsers.add_parser('delete', parents=[HasGargs])
