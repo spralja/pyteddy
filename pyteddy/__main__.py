@@ -15,7 +15,6 @@ def execute(kwargs):
 
 def main():
     kwargs = vars(parser.parse_args())
-    print(kwargs)
     verbose = kwargs.pop('verbose')
 
     if kwargs.pop('version'):
@@ -25,6 +24,11 @@ def main():
     try: 
         execute(kwargs)
     except Exception as e:
+        if type(e) is KeyError:
+            print(f'unknown key: {str(e)!r}')
+        if type(e) is FileNotFoundError:
+            tc = '\''
+            print(f'path {str(e).split(tc)[1]!r} does not exist')
         print('Error: an error has accoured')
         if verbose:
             traceback.print_exception(e, e, sys.exc_info()[2])
